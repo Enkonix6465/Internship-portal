@@ -49,7 +49,7 @@ export default function LoginPage() {
         setLoading(false);
         return;
       }
-      
+
       // store token + role
       if (typeof window !== "undefined") {
         localStorage.setItem("token", data.token || "");
@@ -84,8 +84,12 @@ export default function LoginPage() {
               <Shield size={20} />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Welcome back</h1>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Sign in to continue to the ESS Student Hub</p>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                Welcome back
+              </h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Sign in to continue to the ESS Student Hub
+              </p>
             </div>
           </div>
 
@@ -106,7 +110,9 @@ export default function LoginPage() {
           </div>
 
           <div className="mb-5">
-            <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">Quick demo logins</div>
+            <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">
+              Quick demo logins
+            </div>
             <div className="grid grid-cols-3 gap-2">
               {roles.map((r) => (
                 <button
@@ -123,7 +129,9 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">Email</label>
+              <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">
+                Email
+              </label>
               <div className="mt-1 flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus-within:ring-2 focus-within:ring-orange-500">
                 <Mail size={16} className="text-gray-400" />
                 <input
@@ -138,7 +146,9 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">Password</label>
+              <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">
+                Password
+              </label>
               <div className="mt-1 flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus-within:ring-2 focus-within:ring-orange-500">
                 <Lock size={16} className="text-gray-400" />
                 <input
@@ -152,14 +162,24 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {error && <div className="text-sm text-red-500 bg-red-50 dark:bg-red-900/30 border border-red-100 dark:border-red-800 rounded-lg px-3 py-2">{error}</div>}
+            {error && (
+              <div className="text-sm text-red-500 bg-red-50 dark:bg-red-900/30 border border-red-100 dark:border-red-800 rounded-lg px-3 py-2">
+                {error}
+              </div>
+            )}
 
             <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
               <div className="flex items-center gap-2">
-                <input type="checkbox" id="remember" className="h-4 w-4 rounded border-gray-300 dark:border-gray-600" />
+                <input
+                  type="checkbox"
+                  id="remember"
+                  className="h-4 w-4 rounded border-gray-300 dark:border-gray-600"
+                />
                 <label htmlFor="remember">Remember me</label>
               </div>
-              <a className="hover:text-orange-500" href="#">Forgot?</a>
+              <a className="hover:text-orange-500" href="#">
+                Forgot?
+              </a>
             </div>
 
             <button

@@ -47,7 +47,7 @@ const Assignments = () => {
     Record<number, string>
   >({});
   const [gradeInputs, setGradeInputs] = React.useState<Record<number, string>>(
-    {}
+    {},
   );
   const [editModal, setEditModal] = React.useState<null | {
     assignmentId: number;
@@ -73,7 +73,7 @@ const Assignments = () => {
     currentGrade?: number;
   } | null>(null);
   const [uploadingFileId, setUploadingFileId] = React.useState<number | null>(
-    null
+    null,
   );
 
   // Load assignments from database on mount
@@ -96,8 +96,12 @@ const Assignments = () => {
     setRole(() => {
       if (typeof window !== "undefined") {
         const storedRole = localStorage.getItem("role");
-        
-        if (storedRole === "Student" || storedRole === "Faculty" || storedRole === "Admin") {
+
+        if (
+          storedRole === "Student" ||
+          storedRole === "Faculty" ||
+          storedRole === "Admin"
+        ) {
           return storedRole;
         }
         return "Student";
@@ -106,11 +110,9 @@ const Assignments = () => {
     });
   }, []);
 
-
-
   const setStatus = (id: number, status: AssignmentStatus) => {
     setAssignments((prev) =>
-      prev.map((a) => (a.id === id ? { ...a, status } : a))
+      prev.map((a) => (a.id === id ? { ...a, status } : a)),
     );
     // Update in database
     fetch("/api/assignments", {
@@ -148,8 +150,8 @@ const Assignments = () => {
         prev.map((a) =>
           a.id === item.id && !a.students.includes(name)
             ? { ...a, students: [...a.students, name] }
-            : a
-        )
+            : a,
+        ),
       );
       // Update in database
       fetch("/api/assignments", {
@@ -200,18 +202,18 @@ const Assignments = () => {
                   });
                 } else if (action === "Archive") {
                   const confirmed = window.confirm(
-                    "Archive this assignment? This will remove it for all users."
+                    "Archive this assignment? This will remove it for all users.",
                   );
                   if (!confirmed) return;
                   setAssignments((prev) =>
-                    prev.filter((a) => a.id !== item.id)
+                    prev.filter((a) => a.id !== item.id),
                   );
                   fetch("/api/assignments", {
                     method: "DELETE",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ id: item.id }),
                   }).catch((error) =>
-                    console.error("Failed to archive assignment:", error)
+                    console.error("Failed to archive assignment:", error),
                   );
                 }
               }}
@@ -342,8 +344,8 @@ const Assignments = () => {
                     submittedAt: new Date(),
                   },
                 }
-              : a
-          )
+              : a,
+          ),
         );
         // Update in database
         fetch("/api/assignments", {
@@ -441,7 +443,6 @@ const Assignments = () => {
                     className="w-full pl-8 pr-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
                   />
                 </div>
-                 
               </div>
             </div>
 
@@ -660,7 +661,7 @@ const Assignments = () => {
                   onChange={(e) => {
                     if (e.target.files?.[0]) {
                       setSubmitModal((prev) =>
-                        prev ? { ...prev, file: e.target.files![0] } : null
+                        prev ? { ...prev, file: e.target.files![0] } : null,
                       );
                     }
                   }}
@@ -722,7 +723,7 @@ const Assignments = () => {
       {reviewModal &&
         (() => {
           const assignment = assignments.find(
-            (a) => a.id === reviewModal.assignmentId
+            (a) => a.id === reviewModal.assignmentId,
           );
           return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -785,7 +786,7 @@ const Assignments = () => {
       {gradeModal &&
         (() => {
           const assignment = assignments.find(
-            (a) => a.id === gradeModal.assignmentId
+            (a) => a.id === gradeModal.assignmentId,
           );
           const gradeValue = gradeInputs[gradeModal.assignmentId] || "";
 
@@ -798,8 +799,8 @@ const Assignments = () => {
 
             setAssignments((prev) =>
               prev.map((a) =>
-                a.id === gradeModal.assignmentId ? { ...a, grade } : a
-              )
+                a.id === gradeModal.assignmentId ? { ...a, grade } : a,
+              ),
             );
 
             // Update in database
@@ -906,7 +907,7 @@ const Assignments = () => {
       {editModal &&
         (() => {
           const assignment = assignments.find(
-            (a) => a.id === editModal.assignmentId
+            (a) => a.id === editModal.assignmentId,
           );
 
           const handleEditChange = (
@@ -920,7 +921,7 @@ const Assignments = () => {
               | "submissionUrl"
               | "submissionFileName"
               | "submittedAt",
-            value: string
+            value: string,
           ) => {
             setEditModal((prev) => (prev ? { ...prev, [field]: value } : prev));
           };
@@ -971,8 +972,8 @@ const Assignments = () => {
 
             setAssignments((prev) =>
               prev.map((a) =>
-                a.id === editModal.assignmentId ? updatedAssignment : a
-              )
+                a.id === editModal.assignmentId ? updatedAssignment : a,
+              ),
             );
 
             fetch("/api/assignments", {
@@ -1069,7 +1070,7 @@ const Assignments = () => {
                       onChange={(e) =>
                         handleEditChange(
                           "status",
-                          e.target.value as AssignmentStatus
+                          e.target.value as AssignmentStatus,
                         )
                       }
                       className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500"

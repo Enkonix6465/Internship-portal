@@ -132,7 +132,10 @@ const DownloadsPage: React.FC = () => {
 
               {downloads.length === 0 ? (
                 <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-12 flex flex-col items-center justify-center gap-4 text-center">
-                  <FileText size={48} className="text-gray-300 dark:text-gray-700" />
+                  <FileText
+                    size={48}
+                    className="text-gray-300 dark:text-gray-700"
+                  />
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                       No Downloads Yet
@@ -150,14 +153,14 @@ const DownloadsPage: React.FC = () => {
                       className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-sm transition hover:shadow-md"
                     >
                       <div className="flex items-start gap-3 flex-1 min-w-0">
-                        <div className="flex-shrink-0 mt-1">
+                        <div className="shrink-0 mt-1">
                           <FileText
                             size={24}
                             className="text-orange-500 dark:text-orange-400"
                           />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 break-words">
+                          <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 wrap-break-word">
                             {download.fileName}
                           </h3>
                           <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-gray-500 dark:text-gray-400">
@@ -172,7 +175,9 @@ const DownloadsPage: React.FC = () => {
                           </div>
                           <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-gray-600 dark:text-gray-400">
                             {download.fileSize > 0 && (
-                              <span>Size: {formatFileSize(download.fileSize)}</span>
+                              <span>
+                                Size: {formatFileSize(download.fileSize)}
+                              </span>
                             )}
                             <span>
                               Downloaded:{" "}
@@ -186,7 +191,7 @@ const DownloadsPage: React.FC = () => {
                       </div>
                       <button
                         onClick={() => handleDelete(download.id)}
-                        className="flex-shrink-0 p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 dark:text-red-400 transition"
+                        className="shrink-0 p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 dark:text-red-400 transition"
                         aria-label="Delete download"
                         title="Remove from list"
                       >

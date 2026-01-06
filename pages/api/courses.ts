@@ -2,7 +2,10 @@ import { connectDB } from "@/data/database/mangodb";
 import Course from "@/data/models/course";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   try {
     await connectDB();
 
@@ -15,7 +18,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const { title, instructor, students, avgGrade, nextClass } = req.body;
       if (!title) return res.status(400).json({ error: "Title is required" });
 
-      const course = new Course({ title, instructor, students, avgGrade, nextClass });
+      const course = new Course({
+        title,
+        instructor,
+        students,
+        avgGrade,
+        nextClass,
+      });
       await course.save();
       return res.status(201).json(course);
     }

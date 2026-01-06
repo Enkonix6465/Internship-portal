@@ -61,10 +61,16 @@ const fileToDataUrl = (file: File) =>
     reader.readAsDataURL(file);
   });
 
-const trackDownload = (fileName: string, fileSize: number = 0, noteTitle: string = "") => {
+const trackDownload = (
+  fileName: string,
+  fileSize: number = 0,
+  noteTitle: string = "",
+) => {
   if (typeof window === "undefined") return;
   try {
-    const downloads = JSON.parse(localStorage.getItem("downloads-data") || "[]");
+    const downloads = JSON.parse(
+      localStorage.getItem("downloads-data") || "[]",
+    );
     downloads.unshift({
       id: crypto.randomUUID(),
       fileName,
@@ -299,7 +305,9 @@ const NotesPage: React.FC = () => {
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
                   <div className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl w-full max-w-lg border border-gray-200 dark:border-gray-800">
                     <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Add Note</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                        Add Note
+                      </h3>
                       <button
                         onClick={() => setShowModal(false)}
                         className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400"
@@ -349,10 +357,14 @@ const NotesPage: React.FC = () => {
                       className="p-4 space-y-4"
                     >
                       <div className="space-y-2">
-                        <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">Title</label>
+                        <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">
+                          Title
+                        </label>
                         <input
                           value={newNote.title}
-                          onChange={(e) => setNewNote((s) => ({ ...s, title: e.target.value }))}
+                          onChange={(e) =>
+                            setNewNote((s) => ({ ...s, title: e.target.value }))
+                          }
                           required
                           className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-gray-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
                           placeholder="Note title"
@@ -360,10 +372,17 @@ const NotesPage: React.FC = () => {
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">Excerpt</label>
+                        <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">
+                          Excerpt
+                        </label>
                         <textarea
                           value={newNote.excerpt}
-                          onChange={(e) => setNewNote((s) => ({ ...s, excerpt: e.target.value }))}
+                          onChange={(e) =>
+                            setNewNote((s) => ({
+                              ...s,
+                              excerpt: e.target.value,
+                            }))
+                          }
                           required
                           className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-gray-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
                           rows={3}
@@ -373,28 +392,44 @@ const NotesPage: React.FC = () => {
 
                       <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-2">
-                          <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">Author</label>
+                          <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">
+                            Author
+                          </label>
                           <input
                             value={newNote.author}
-                            onChange={(e) => setNewNote((s) => ({ ...s, author: e.target.value }))}
+                            onChange={(e) =>
+                              setNewNote((s) => ({
+                                ...s,
+                                author: e.target.value,
+                              }))
+                            }
                             required
                             className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-gray-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
                             placeholder="Name"
                           />
                         </div>
                         <div className="space-y-2">
-                          <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">Date</label>
+                          <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">
+                            Date
+                          </label>
                           <input
                             type="datetime-local"
                             value={newNote.date.slice(0, 16)}
-                            onChange={(e) => setNewNote((s) => ({ ...s, date: new Date(e.target.value).toISOString() }))}
+                            onChange={(e) =>
+                              setNewNote((s) => ({
+                                ...s,
+                                date: new Date(e.target.value).toISOString(),
+                              }))
+                            }
                             className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-gray-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
                           />
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">Tags (comma separated)</label>
+                        <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">
+                          Tags (comma separated)
+                        </label>
                         <input
                           value={newNote.tags.join(", ")}
                           onChange={(e) =>
@@ -412,7 +447,9 @@ const NotesPage: React.FC = () => {
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">Attach file (optional)</label>
+                        <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">
+                          Attach file (optional)
+                        </label>
                         <input
                           type="file"
                           onChange={(e) => {
@@ -428,7 +465,9 @@ const NotesPage: React.FC = () => {
                           aria-label="Attach note file"
                         />
                         {newNoteFile?.name && (
-                          <p className="text-xs text-gray-500 dark:text-gray-400">Selected: {newNoteFile.name}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            Selected: {newNoteFile.name}
+                          </p>
                         )}
                       </div>
 
@@ -457,8 +496,12 @@ const NotesPage: React.FC = () => {
                   <div className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl w-full max-w-2xl border border-gray-200 dark:border-gray-800">
                     <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
                       <div>
-                        <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Note Details</p>
-                        <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{viewNote.title}</h3>
+                        <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                          Note Details
+                        </p>
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                          {viewNote.title}
+                        </h3>
                       </div>
                       <button
                         onClick={() => setViewNote(null)}
@@ -487,13 +530,17 @@ const NotesPage: React.FC = () => {
                         </span>
                       </div>
 
-                      <p className="text-sm text-gray-700 dark:text-gray-200 leading-relaxed">{viewNote.excerpt}</p>
+                      <p className="text-sm text-gray-700 dark:text-gray-200 leading-relaxed">
+                        {viewNote.excerpt}
+                      </p>
 
                       {viewNote.attachmentName && (
                         <div className="space-y-2 rounded-lg border border-gray-100 dark:border-gray-800 p-3 bg-gray-50 dark:bg-gray-800/40">
                           <div className="flex flex-wrap items-center gap-3 text-sm text-gray-700 dark:text-gray-200">
                             <span className="font-semibold">Attachment:</span>
-                            <span className="text-gray-600 dark:text-gray-300">{viewNote.attachmentName}</span>
+                            <span className="text-gray-600 dark:text-gray-300">
+                              {viewNote.attachmentName}
+                            </span>
                             {viewNote.attachmentUrl && (
                               <>
                                 <a
@@ -511,7 +558,7 @@ const NotesPage: React.FC = () => {
                                     trackDownload(
                                       viewNote.attachmentName || "file",
                                       0,
-                                      viewNote.title
+                                      viewNote.title,
                                     )
                                   }
                                   className="text-blue-600 dark:text-blue-400 font-semibold"
@@ -523,7 +570,9 @@ const NotesPage: React.FC = () => {
                           </div>
 
                           {viewNote.attachmentUrl &&
-                            /\.(png|jpe?g|gif|webp|svg)$/i.test(viewNote.attachmentName || "") && (
+                            /\.(png|jpe?g|gif|webp|svg)$/i.test(
+                              viewNote.attachmentName || "",
+                            ) && (
                               <div className="rounded-lg overflow-hidden border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900">
                                 <img
                                   src={viewNote.attachmentUrl}
@@ -543,8 +592,12 @@ const NotesPage: React.FC = () => {
                             .join("")}
                         </div>
                         <div>
-                          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{viewNote.author}</p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">Author</p>
+                          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                            {viewNote.author}
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            Author
+                          </p>
                         </div>
                       </div>
                     </div>

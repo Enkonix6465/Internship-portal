@@ -3,7 +3,7 @@ import user from "@/data/models/user";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -15,11 +15,11 @@ export default async function handler(
     role?: string;
   };
 
-//   const loggedInuser = await user.findOne({ email: email });
+  //   const loggedInuser = await user.findOne({ email: email });
 
-//   if (!loggedInuser) {
-//     return res.status(401).json({ error: "Invalid credentials" });
-//   }
+  //   if (!loggedInuser) {
+  //     return res.status(401).json({ error: "Invalid credentials" });
+  //   }
   // Provide sensible defaults for local/demo testing
   const defaultEmail = email || "demo@school.edu";
   const defaultPassword = password || "password"; // working demo password

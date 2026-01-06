@@ -2,24 +2,24 @@ import CalendarView from "@/components/Calendar";
 import Sidebar from "@/components/Sidebar";
 import TabBar from "@/components/TabBar";
 import {
-    AlertCircle,
-    Award,
-    Bell,
-    BookOpen,
-    Calendar,
-    ChevronDown,
-    Clock,
-    MapPin,
-    Menu,
-    MessageSquare,
-    Pencil,
-    Pin,
-    Plus,
-    TrendingUp,
-    Upload,
-    Users,
-    Video,
-    X
+  AlertCircle,
+  Award,
+  Bell,
+  BookOpen,
+  Calendar,
+  ChevronDown,
+  Clock,
+  MapPin,
+  Menu,
+  MessageSquare,
+  Pencil,
+  Pin,
+  Plus,
+  TrendingUp,
+  Upload,
+  Users,
+  Video,
+  X,
 } from "lucide-react";
 import Head from "next/head";
 import React from "react";

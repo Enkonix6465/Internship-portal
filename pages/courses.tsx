@@ -67,6 +67,19 @@ const Courses: React.FC = () => {
     student: string;
     grade: number;
   } | null>(null);
+  const [resourcesCourse, setResourcesCourse] = useState<{
+    id: string;
+    title: string;
+    notes: string;
+  } | null>(null);
+  const [viewMaterialsCourse, setViewMaterialsCourse] = useState<{
+    id: string;
+    title: string;
+    notes: string;
+    attachmentName?: string;
+    attachmentUrl?: string;
+  } | null>(null);
+  const [resourceFile, setResourceFile] = useState<File | null>(null);
   const [newCourse, setNewCourse] = useState<{
     title: string;
     instructor: string;
@@ -94,7 +107,7 @@ const Courses: React.FC = () => {
               avgGrade: d.avgGrade || 0,
               instructor: d.instructor || "",
               nextClass: d.nextClass || "",
-            }))
+            })),
           );
           setStudentCourses(
             data.map((d: any) => ({
@@ -103,7 +116,7 @@ const Courses: React.FC = () => {
               instructor: d.instructor || "",
               progress: d.progress || 0,
               nextClass: d.nextClass,
-            }))
+            })),
           );
         }
       })
@@ -218,7 +231,36 @@ const Courses: React.FC = () => {
                         <button className="px-3 py-1 text-sm bg-orange-500 hover:bg-orange-600 text-white rounded-lg">
                           Join Class
                         </button>
-                        <button className="px-3 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded-lg">
+                        <button
+                          className="px-3 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded-lg"
+                          onClick={() => {
+                            try {
+                              const materials = JSON.parse(
+                                localStorage.getItem("course-materials") ||
+                                  "{}",
+                              );
+                              const courseMaterial = materials[c.id];
+                              if (courseMaterial) {
+                                setViewMaterialsCourse({
+                                  id: c.id,
+                                  title: c.title,
+                                  notes: courseMaterial.notes || "",
+                                  attachmentName: courseMaterial.attachmentName,
+                                  attachmentUrl: courseMaterial.attachmentUrl,
+                                });
+                              } else {
+                                setViewMaterialsCourse({
+                                  id: c.id,
+                                  title: c.title,
+                                  notes:
+                                    "No materials available for this course yet.",
+                                });
+                              }
+                            } catch (err) {
+                              console.error("Failed to load materials", err);
+                            }
+                          }}
+                        >
                           Materials
                         </button>
                       </div>
@@ -255,14 +297,18 @@ const Courses: React.FC = () => {
                         <button
                           className="px-3 py-1 text-sm bg-orange-500 hover:bg-orange-600 text-white rounded-lg"
                           onClick={() => {
-                            const studentMatch = studentCourses.find((s) => s.id === c.id);
+                            const studentMatch = studentCourses.find(
+                              (s) => s.id === c.id,
+                            );
                             setEditingCourse({
                               id: c.id,
                               title: c.title,
-                              instructor: c.instructor || studentMatch?.instructor || "",
+                              instructor:
+                                c.instructor || studentMatch?.instructor || "",
                               students: c.students,
                               avgGrade: c.avgGrade,
-                              nextClass: c.nextClass || studentMatch?.nextClass || "",
+                              nextClass:
+                                c.nextClass || studentMatch?.nextClass || "",
                             });
                           }}
                         >
@@ -281,9 +327,18 @@ const Courses: React.FC = () => {
                         >
                           Grade
                         </button>
-                        <button className="px-3 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded-lg">
-                          Edit
-                        </button>
+                        <button
+                          className="px-3 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded-lg"
+                          onClick={() =>
+                            setResourcesCourse({
+                              id: c.id,
+                              title: c.title,
+                              notes: "",
+                            })
+                          }
+                        >
+                          Add Notes & Files
+                        </button>{" "}
                       </div>
                     </div>
                   ))}
@@ -467,8 +522,12 @@ const Courses: React.FC = () => {
                   >
                     <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
                       <div>
-                        <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Manage Course</p>
-                        <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-200">{editingCourse.title}</h4>
+                        <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                          Manage Course
+                        </p>
+                        <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                          {editingCourse.title}
+                        </h4>
                       </div>
                       <button
                         type="button"
@@ -510,8 +569,8 @@ const Courses: React.FC = () => {
                                       instructor: payload.instructor,
                                       nextClass: payload.nextClass,
                                     }
-                                  : fc
-                              )
+                                  : fc,
+                              ),
                             );
                             setStudentCourses((prev) =>
                               prev.map((sc) =>
@@ -522,8 +581,8 @@ const Courses: React.FC = () => {
                                       instructor: payload.instructor,
                                       nextClass: payload.nextClass,
                                     }
-                                  : sc
-                              )
+                                  : sc,
+                              ),
                             );
                             setEditingCourse(null);
                           } else {
@@ -536,12 +595,14 @@ const Courses: React.FC = () => {
                       className="p-4 space-y-4"
                     >
                       <div className="space-y-2">
-                        <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">Title</label>
+                        <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">
+                          Title
+                        </label>
                         <input
                           value={editingCourse.title}
                           onChange={(e) =>
                             setEditingCourse((s) =>
-                              s ? { ...s, title: e.target.value } : s
+                              s ? { ...s, title: e.target.value } : s,
                             )
                           }
                           className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-gray-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -549,12 +610,14 @@ const Courses: React.FC = () => {
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">Instructor</label>
+                        <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">
+                          Instructor
+                        </label>
                         <input
                           value={editingCourse.instructor}
                           onChange={(e) =>
                             setEditingCourse((s) =>
-                              s ? { ...s, instructor: e.target.value } : s
+                              s ? { ...s, instructor: e.target.value } : s,
                             )
                           }
                           className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-gray-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -563,27 +626,35 @@ const Courses: React.FC = () => {
 
                       <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-2">
-                          <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">Students</label>
+                          <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">
+                            Students
+                          </label>
                           <input
                             type="number"
                             value={editingCourse.students}
                             onChange={(e) =>
                               setEditingCourse((s) =>
-                                s ? { ...s, students: Number(e.target.value) } : s
+                                s
+                                  ? { ...s, students: Number(e.target.value) }
+                                  : s,
                               )
                             }
                             className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-gray-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
                           />
                         </div>
                         <div className="space-y-2">
-                          <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">Avg Grade</label>
+                          <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">
+                            Avg Grade
+                          </label>
                           <input
                             type="number"
                             step="0.1"
                             value={editingCourse.avgGrade}
                             onChange={(e) =>
                               setEditingCourse((s) =>
-                                s ? { ...s, avgGrade: Number(e.target.value) } : s
+                                s
+                                  ? { ...s, avgGrade: Number(e.target.value) }
+                                  : s,
                               )
                             }
                             className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-gray-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -592,12 +663,14 @@ const Courses: React.FC = () => {
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">Next Class</label>
+                        <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">
+                          Next Class
+                        </label>
                         <input
                           value={editingCourse.nextClass}
                           onChange={(e) =>
                             setEditingCourse((s) =>
-                              s ? { ...s, nextClass: e.target.value } : s
+                              s ? { ...s, nextClass: e.target.value } : s,
                             )
                           }
                           className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-gray-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -636,8 +709,12 @@ const Courses: React.FC = () => {
                   >
                     <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
                       <div>
-                        <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Grade Course</p>
-                        <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-200">{gradingCourse.title}</h4>
+                        <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                          Grade Course
+                        </p>
+                        <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                          {gradingCourse.title}
+                        </h4>
                       </div>
                       <button
                         type="button"
@@ -658,12 +735,14 @@ const Courses: React.FC = () => {
                       className="p-4 space-y-4"
                     >
                       <div className="space-y-2">
-                        <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">Student</label>
+                        <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">
+                          Student
+                        </label>
                         <input
                           value={gradingCourse.student}
                           onChange={(e) =>
                             setGradingCourse((s) =>
-                              s ? { ...s, student: e.target.value } : s
+                              s ? { ...s, student: e.target.value } : s,
                             )
                           }
                           className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-gray-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -673,7 +752,9 @@ const Courses: React.FC = () => {
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">Grade</label>
+                        <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">
+                          Grade
+                        </label>
                         <input
                           type="number"
                           min={0}
@@ -681,7 +762,7 @@ const Courses: React.FC = () => {
                           value={gradingCourse.grade}
                           onChange={(e) =>
                             setGradingCourse((s) =>
-                              s ? { ...s, grade: Number(e.target.value) } : s
+                              s ? { ...s, grade: Number(e.target.value) } : s,
                             )
                           }
                           className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-gray-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -706,6 +787,258 @@ const Courses: React.FC = () => {
                         </button>
                       </div>
                     </form>
+                  </div>
+                </div>
+              )}
+
+              {resourcesCourse && (
+                <div
+                  className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+                  onClick={() => setResourcesCourse(null)}
+                >
+                  <div
+                    className="bg-white dark:bg-gray-900 rounded-xl shadow-xl w-full max-w-md border border-gray-200 dark:border-gray-800"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
+                      <div>
+                        <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                          Add Resources
+                        </p>
+                        <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                          {resourcesCourse.title}
+                        </h4>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setResourcesCourse(null)}
+                        className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400"
+                        aria-label="Close add resources"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+
+                    <form
+                      onSubmit={async (e) => {
+                        e.preventDefault();
+                        try {
+                          let attachmentUrl = "";
+                          let attachmentName = "";
+                          if (resourceFile) {
+                            const reader = new FileReader();
+                            attachmentUrl = await new Promise<string>(
+                              (resolve, reject) => {
+                                reader.onload = () =>
+                                  resolve(String(reader.result));
+                                reader.onerror = () => reject(reader.error);
+                                reader.readAsDataURL(resourceFile);
+                              },
+                            );
+                            attachmentName = resourceFile.name;
+                          }
+
+                          const materials = JSON.parse(
+                            localStorage.getItem("course-materials") || "{}",
+                          );
+                          materials[resourcesCourse.id] = {
+                            notes: resourcesCourse.notes,
+                            attachmentName,
+                            attachmentUrl,
+                            updatedAt: new Date().toISOString(),
+                          };
+                          localStorage.setItem(
+                            "course-materials",
+                            JSON.stringify(materials),
+                          );
+
+                          setResourcesCourse(null);
+                          setResourceFile(null);
+                        } catch (err) {
+                          console.error(err);
+                        }
+                      }}
+                      className="p-4 space-y-4"
+                    >
+                      <div className="space-y-2">
+                        <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">
+                          Notes
+                        </label>
+                        <textarea
+                          value={resourcesCourse.notes}
+                          onChange={(e) =>
+                            setResourcesCourse((s) =>
+                              s ? { ...s, notes: e.target.value } : s,
+                            )
+                          }
+                          className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-gray-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none"
+                          placeholder="Enter course notes..."
+                          rows={4}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">
+                          Upload File
+                        </label>
+                        <input
+                          type="file"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0] || null;
+                            setResourceFile(file);
+                          }}
+                          className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-gray-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          accept=".pdf,.doc,.docx,.txt,.ppt,.pptx,.xls,.xlsx"
+                        />
+                        {resourceFile && (
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            Selected: {resourceFile.name}
+                          </p>
+                        )}
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          Supported formats: PDF, DOC, DOCX, TXT, PPT, PPTX,
+                          XLS, XLSX
+                        </p>
+                      </div>
+
+                      <div className="flex justify-end gap-2 pt-2">
+                        <button
+                          type="button"
+                          onClick={() => setResourcesCourse(null)}
+                          className="px-4 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          className="px-4 py-2 text-sm rounded-lg bg-orange-500 text-white hover:bg-orange-600"
+                        >
+                          Add Resources
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
+
+              {viewMaterialsCourse && (
+                <div
+                  className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+                  onClick={() => setViewMaterialsCourse(null)}
+                >
+                  <div
+                    className="bg-white dark:bg-gray-900 rounded-xl shadow-xl w-full max-w-2xl border border-gray-200 dark:border-gray-800"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
+                      <div>
+                        <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                          Course Materials
+                        </p>
+                        <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                          {viewMaterialsCourse.title}
+                        </h4>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setViewMaterialsCourse(null)}
+                        className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400"
+                        aria-label="Close materials"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+
+                    <div className="p-4 space-y-4">
+                      <div>
+                        <h5 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                          Notes
+                        </h5>
+                        <p className="text-sm text-gray-700 dark:text-gray-200 leading-relaxed whitespace-pre-wrap">
+                          {viewMaterialsCourse.notes}
+                        </p>
+                      </div>
+
+                      {viewMaterialsCourse.attachmentName && (
+                        <div className="space-y-2 rounded-lg border border-gray-100 dark:border-gray-800 p-3 bg-gray-50 dark:bg-gray-800/40">
+                          <div className="flex flex-wrap items-center gap-3 text-sm text-gray-700 dark:text-gray-200">
+                            <span className="font-semibold">Attachment:</span>
+                            <span className="text-gray-600 dark:text-gray-300">
+                              {viewMaterialsCourse.attachmentName}
+                            </span>
+                            {viewMaterialsCourse.attachmentUrl && (
+                              <>
+                                <a
+                                  href={viewMaterialsCourse.attachmentUrl}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="text-blue-600 dark:text-blue-400 font-semibold hover:underline"
+                                >
+                                  Preview
+                                </a>
+                                <a
+                                  href={viewMaterialsCourse.attachmentUrl}
+                                  download={viewMaterialsCourse.attachmentName}
+                                  onClick={() => {
+                                    try {
+                                      const downloads = JSON.parse(
+                                        localStorage.getItem(
+                                          "downloads-data",
+                                        ) || "[]",
+                                      );
+                                      downloads.unshift({
+                                        id: crypto.randomUUID(),
+                                        fileName:
+                                          viewMaterialsCourse.attachmentName ||
+                                          "file",
+                                        fileSize: 0,
+                                        downloadTime: new Date().toISOString(),
+                                        noteTitle: viewMaterialsCourse.title,
+                                      });
+                                      localStorage.setItem(
+                                        "downloads-data",
+                                        JSON.stringify(downloads),
+                                      );
+                                    } catch (err) {
+                                      console.error(
+                                        "Failed to track download",
+                                        err,
+                                      );
+                                    }
+                                  }}
+                                  className="text-blue-600 dark:text-blue-400 font-semibold hover:underline"
+                                >
+                                  Download
+                                </a>
+                              </>
+                            )}
+                          </div>
+
+                          {viewMaterialsCourse.attachmentUrl &&
+                            /\\.(png|jpe?g|gif|webp|svg)$/i.test(
+                              viewMaterialsCourse.attachmentName || "",
+                            ) && (
+                              <div className="rounded-lg overflow-hidden border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900">
+                                <img
+                                  src={viewMaterialsCourse.attachmentUrl}
+                                  alt={viewMaterialsCourse.attachmentName}
+                                  className="max-h-64 w-full object-contain"
+                                />
+                              </div>
+                            )}
+                        </div>
+                      )}
+
+                      <div className="flex justify-end pt-2">
+                        <button
+                          type="button"
+                          onClick={() => setViewMaterialsCourse(null)}
+                          className="px-4 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
